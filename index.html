@@ -405,13 +405,14 @@
     margin-bottom: 1rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    
 
-    /* Style the submit button to match your site's buttons */
-    #mc_embed_signup .button,
+    /* Style the submit button to match your site's buttons */   
+    /*#mc_embed_signup .button,
     #mc_embed_signup input[type="submit"] {
     padding: 0.8rem 2rem;
     background-color: var(--secondary); /* Using your site's color variable */
-    color: white;
+    /*color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -419,6 +420,21 @@
     font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
     width: auto !important; /* Override Mailchimp's default width */
+    /*}*/
+
+    #mc_embed_signup .button,
+    #mc_embed_signup input[type="submit"] {
+    padding: 0.8rem 2rem !important;
+    background-color: var(--secondary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    transition: background-color 0.3s, transform 0.2s !important;
+    width: auto !important;  /* This is key! */
+    display: inline-block !important;
     }
 
     #mc_embed_signup .button:hover,
