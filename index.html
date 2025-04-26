@@ -621,7 +621,8 @@
     // Simple CSV parser function
     function parseCSV(text) {
     const rows = text.split('\n');
-    return rows.map(row => {
+    // Skip the header row by starting from index 1
+    return rows.slice(1).map(row => {
         // Handle quoted values that might contain commas
         const result = [];
         let insideQuotes = false;
@@ -644,12 +645,16 @@
         result.push(currentValue.trim().replace(/^"|"$/g, ''));
         }
         
+        // Get the raw image URL from the spreadsheet
+        let imageUrl = result[3] || '';
+        
         // Format: [Title, Description, Price, ImageURL]
         return {
         title: result[0] || '',
         description: result[1] || '',
         price: result[2] || '',
-        imageUrl: result[3] || '/api/placeholder/400/300' // Use placeholder if no image URL
+        // Process Google Drive URLs to ensure they work correctly
+        imageUrl: imageUrl || '/api/placeholder/400/300' // Fallback to placeholder if no URL
         };
     }).filter(item => item.title); // Filter out empty rows
     }
@@ -676,12 +681,12 @@
         const menuItemHTML = `
         <div class="menu-item">
             <div class="menu-image">
-            <img src="${item.imageUrl}" alt="${item.title}">
+                <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='/api/placeholder/400/300'; this.onerror=null;">
             </div>
             <div class="menu-info">
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
-            <span class="price">${item.price}</span>
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+                <span class="price">${item.price}</span>
             </div>
         </div>
         `;
