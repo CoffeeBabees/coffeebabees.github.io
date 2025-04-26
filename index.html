@@ -586,7 +586,7 @@
         <div class="location">
           <h3>Find Us</h3>
           <div class="map-container">
-            <img src="/images/Map.png" alt="Map of coffee shop location" style="width:100%; height:100%; object-fit:cover;">
+            <img src="/images/Map.PNG" alt="Map of coffee shop location" style="width:100%; height:100%; object-fit:cover;">
           </div>
           <p>123 Coffee Street, Downtown, City, ST 12345</p>
           <p>Open Monday - Friday: 6am - 8pm | Weekends: 7am - 9pm</p>
@@ -647,11 +647,11 @@
     }
     }
 
-    // Update the parseCSV function to properly handle Google Drive image URLs
+    // Update the parseCSV function to use local image naming convention
     function parseCSV(text) {
     const rows = text.split('\n');
     // Skip the header row by starting from index 1
-    return rows.slice(1).map(row => {
+    return rows.slice(1).map((row, index) => {
         // Handle quoted values that might contain commas
         const result = [];
         let insideQuotes = false;
@@ -674,27 +674,13 @@
         result.push(currentValue.trim().replace(/^"|"$/g, ''));
         }
         
-        // Get the raw image URL from the spreadsheet
-        let imageUrl = result[3] || '';
-        
-        // Fix Google Drive URLs if needed
-        if (imageUrl && imageUrl.includes('drive.google.com')) {
-        // If it's already in the correct format with "uc?export=view", use it as is
-        if (!imageUrl.includes('uc?export=view')) {
-            // Extract the ID if it's in another format
-            const idMatch = imageUrl.match(/[-\w]{25,}/);
-            if (idMatch && idMatch[0]) {
-            imageUrl = `https://drive.google.com/uc?export=view&id=${idMatch[0]}`;
-            }
-        }
-        }
-        
-        // Format: [Title, Description, Price, ImageURL]
+        // Format: [Title, Description, Price] - no ImageURL from Google Sheet
+        // Use local image naming convention instead
         return {
         title: result[0] || '',
         description: result[1] || '',
         price: result[2] || '',
-        imageUrl: imageUrl || '/api/placeholder/400/300' // Fallback to placeholder if no URL
+        imageUrl: `./images/Product${index + 1}.jpg` // Use local path with index+1
         };
     }).filter(item => item.title); // Filter out empty rows
     }
@@ -703,8 +689,6 @@
     function renderMenuItems(items) {
     const menuGrid = document.querySelector('.menu-grid');
     if (!menuGrid) return;
-    
-    console.log("Menu items to render:", items); // Debug output
     
     // Clear existing menu items
     menuGrid.innerHTML = '';
@@ -720,13 +704,11 @@
     
     // Add new menu items from Google Sheet
     items.forEach(item => {
-        console.log("Rendering item with image URL:", item.imageUrl); // Debug image URL
-        
         const menuItemHTML = `
         <div class="menu-item">
             <div class="menu-image">
                 <img src="${item.imageUrl}" alt="${item.title}" 
-                     onerror="console.error('Failed to load image:', this.src); this.src='/api/placeholder/400/300'; this.onerror=null;">
+                     onerror="this.src='./images/placeholder.jpg'; this.onerror=null;">
             </div>
             <div class="menu-info">
                 <h3>${item.title}</h3>
