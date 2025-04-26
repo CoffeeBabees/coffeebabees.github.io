@@ -504,8 +504,8 @@
   </header>
 
   <section id="home" class="hero">
-    <h1>Welcome to CoffeeBabees</h1>
-    <p>Artisanal coffee in the heart of the city. Experience coffee crafted with passion and precision.</p>
+    <h1>CoffeeBabees</h1>
+    <p>Fresh Pro-Life Coffee</p>
     <a href="#contact" class="btn">Join Our Newsletter</a>
   </section>
 
@@ -574,7 +574,7 @@
         </div>
             
         <div class="contact-info">
-          <p>Have questions? Contact us at: <a href="mailto:hello@brewhaven.com">hello@brewhaven.com</a></p>
+          <p>Have questions? Contact us at: <a href="mailto:CoffeeBabees@gmail.com">CoffeeBabees@gmail.com</a></p>
           <p>Or follow us on social media:</p>
           <div class="social-links">
             <a href="https://www.facebook.com/coffeebabees/" aria-label="Facebook">FB</a>
@@ -586,7 +586,7 @@
         <div class="location">
           <h3>Find Us</h3>
           <div class="map-container">
-            <img src="/api/placeholder/1200/400" alt="Map of coffee shop location" style="width:100%; height:100%; object-fit:cover;">
+            <img src="/images/Map.png" alt="Map of coffee shop location" style="width:100%; height:100%; object-fit:cover;">
           </div>
           <p>123 Coffee Street, Downtown, City, ST 12345</p>
           <p>Open Monday - Friday: 6am - 8pm | Weekends: 7am - 9pm</p>
@@ -599,7 +599,7 @@
     <div class="footer-content">
       <div class="footer-section">
         <h3>CoffeeBabees</h3>
-        <p>Crafting exceptional coffee experiences since 2018.</p>
+        <p>Fresh Pro-Life Coffee</p>
       </div>
       
       <div class="footer-section">
@@ -614,7 +614,7 @@
         <h3>Contact</h3>
         <p>123 Coffee Street</p>
         <p>Downtown, City, ST 12345</p>
-        <p>hello@brewhaven.com</p>
+        <p>CoffeeBabees@gmail.com</p>
         <p>(555) 123-4567</p>
       </div>
     </div>
@@ -647,7 +647,7 @@
     }
     }
 
-    // Simple CSV parser function
+    // Update the parseCSV function to properly handle Google Drive image URLs
     function parseCSV(text) {
     const rows = text.split('\n');
     // Skip the header row by starting from index 1
@@ -677,12 +677,23 @@
         // Get the raw image URL from the spreadsheet
         let imageUrl = result[3] || '';
         
+        // Fix Google Drive URLs if needed
+        if (imageUrl && imageUrl.includes('drive.google.com')) {
+        // If it's already in the correct format with "uc?export=view", use it as is
+        if (!imageUrl.includes('uc?export=view')) {
+            // Extract the ID if it's in another format
+            const idMatch = imageUrl.match(/[-\w]{25,}/);
+            if (idMatch && idMatch[0]) {
+            imageUrl = `https://drive.google.com/uc?export=view&id=${idMatch[0]}`;
+            }
+        }
+        }
+        
         // Format: [Title, Description, Price, ImageURL]
         return {
         title: result[0] || '',
         description: result[1] || '',
         price: result[2] || '',
-        // Process Google Drive URLs to ensure they work correctly
         imageUrl: imageUrl || '/api/placeholder/400/300' // Fallback to placeholder if no URL
         };
     }).filter(item => item.title); // Filter out empty rows
@@ -692,6 +703,8 @@
     function renderMenuItems(items) {
     const menuGrid = document.querySelector('.menu-grid');
     if (!menuGrid) return;
+    
+    console.log("Menu items to render:", items); // Debug output
     
     // Clear existing menu items
     menuGrid.innerHTML = '';
@@ -707,10 +720,13 @@
     
     // Add new menu items from Google Sheet
     items.forEach(item => {
+        console.log("Rendering item with image URL:", item.imageUrl); // Debug image URL
+        
         const menuItemHTML = `
         <div class="menu-item">
             <div class="menu-image">
-                <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='/api/placeholder/400/300'; this.onerror=null;">
+                <img src="${item.imageUrl}" alt="${item.title}" 
+                     onerror="console.error('Failed to load image:', this.src); this.src='/api/placeholder/400/300'; this.onerror=null;">
             </div>
             <div class="menu-info">
                 <h3>${item.title}</h3>
