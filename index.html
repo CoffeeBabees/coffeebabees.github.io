@@ -393,7 +393,7 @@
       width: 100%; /* Use 100% width to be fully responsive */
       max-width: 600px;
       margin: 0 auto;
-      padding-bottom: 60px; /* Add extra padding at the bottom */
+      padding-bottom: 20px; /* Reduced from 60px */
     }
 
     /* Style the input fields */
@@ -426,8 +426,10 @@
       margin: 0 auto !important; /* Center it */
       position: relative; /* Add position relative */
       z-index: 5; /* Add z-index to ensure button appears above other elements */
-      margin-bottom: 30px !important; /* Add bottom margin to the button */
-      margin-top: 20px !important; /* Add top margin to the button */
+      margin-bottom: 10px !important; /* Reduced from 30px */
+      margin-top: 10px !important; /* Reduced from 20px */
+      height: auto !important; /* Force height to auto */
+      min-height: 44px !important; /* Ensure minimum height */
     }
 
     #mc_embed_signup .button:hover,
@@ -447,7 +449,8 @@
     /* Fix for the form container */
     #mc_embed_signup form {
       padding: 10px !important;
-      padding-bottom: 50px !important; /* Add extra padding at bottom of form */
+      padding-bottom: 20px !important; /* Reduced from 50px */
+      margin-bottom: 0 !important;
     }
 
     .about-text p + p {
@@ -467,9 +470,22 @@
 
     /* Fix for the footer of the form */
     #mc_embed_signup .foot {
-      padding-bottom: 40px !important;
-      min-height: 60px !important;
+      padding-bottom: 10px !important; /* Reduced from 40px */
+      min-height: 40px !important; /* Reduced from 60px */
       position: relative !important;
+      overflow: visible !important;
+    }
+
+    /* Fix specifically for the Mailchimp badge container */
+    .optionalParent {
+      margin-bottom: 0 !important;
+    }
+
+    /* Additional fix for clearing float issues */
+    .clear {
+      clear: both !important;
+      display: block !important;
+      overflow: visible !important;
     }
   </style>
 </head>
@@ -561,9 +577,9 @@
           <p>Have questions? Contact us at: <a href="mailto:hello@brewhaven.com">hello@brewhaven.com</a></p>
           <p>Or follow us on social media:</p>
           <div class="social-links">
-            <a href="#" aria-label="Facebook">FB</a>
-            <a href="#" aria-label="Instagram">IG</a>
-            <a href="#" aria-label="Twitter">TW</a>
+            <a href="https://www.facebook.com/coffeebabees/" aria-label="Facebook">FB</a>
+            <a href="http://instagram.com/coffeebabees" aria-label="Instagram">IG</a>
+            <a href="http://tiktok.com/@coffeebabees" aria-label="Tiktok">TT</a>
           </div>
         </div>
         
