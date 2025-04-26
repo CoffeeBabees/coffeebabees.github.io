@@ -597,108 +597,104 @@
 
   <!-- Google Sheets Integration Script -->
   <script>
-    // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE SHEET ID
-    const SHEET_ID = '1A2S6cA28pPKhKinbNxxgkgJVXU_bJDh0FOAvQ8BJm-c'; // Get this from your Google Sheet URL
-    const SHEET_NAME = 'Products'; // The name of your sheet tab
-    const SHEET_RANGE = 'A2:D7'; // Start from row 2 to skip headers, columns A-D
-    
+// Configuration - Use the full published sheet URL
+    const PUBLISHED_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLxdwQgn12mJ2omdJGk9lTI3rc1YQ-ucCgzm4-6GmoD3xcTPd10O0QDsAWyLfduBKrQB6iMU6tKm1e/pub?gid=0&single=true&output=csv';
+
     // Function to fetch menu data from Google Sheets
     async function fetchMenuItems() {
-      try {
-        // Google Sheets CSV export URL format
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}&range=${SHEET_RANGE}`;
-        
-        const response = await fetch(url);
+    try {
+        // Use the full published URL directly
+        const response = await fetch(PUBLISHED_SHEET_URL);
         if (!response.ok) {
-          throw new Error('Failed to fetch menu data');
+        throw new Error('Failed to fetch menu data');
         }
         
         const csvText = await response.text();
         const items = parseCSV(csvText);
         return items;
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching menu data:', error);
         return []; // Return empty array on error
-      }
     }
-    
+    }
+
     // Simple CSV parser function
     function parseCSV(text) {
-      const rows = text.split('\n');
-      return rows.map(row => {
+    const rows = text.split('\n');
+    return rows.map(row => {
         // Handle quoted values that might contain commas
         const result = [];
         let insideQuotes = false;
         let currentValue = '';
         
         for (let i = 0; i < row.length; i++) {
-          const char = row[i];
-          
-          if (char === '"' && (i === 0 || row[i-1] !== '\\')) {
+        const char = row[i];
+        
+        if (char === '"' && (i === 0 || row[i-1] !== '\\')) {
             insideQuotes = !insideQuotes;
-          } else if (char === ',' && !insideQuotes) {
+        } else if (char === ',' && !insideQuotes) {
             result.push(currentValue.trim().replace(/^"|"$/g, ''));
             currentValue = '';
-          } else {
+        } else {
             currentValue += char;
-          }
+        }
         }
         
         if (currentValue) {
-          result.push(currentValue.trim().replace(/^"|"$/g, ''));
+        result.push(currentValue.trim().replace(/^"|"$/g, ''));
         }
         
         // Format: [Title, Description, Price, ImageURL]
         return {
-          title: result[0] || '',
-          description: result[1] || '',
-          price: result[2] || '',
-          imageUrl: result[3] || '/api/placeholder/400/300' // Use placeholder if no image URL
+        title: result[0] || '',
+        description: result[1] || '',
+        price: result[2] || '',
+        imageUrl: result[3] || '/api/placeholder/400/300' // Use placeholder if no image URL
         };
-      }).filter(item => item.title); // Filter out empty rows
+    }).filter(item => item.title); // Filter out empty rows
     }
-    
+
     // Function to render menu items to the page
     function renderMenuItems(items) {
-      const menuGrid = document.querySelector('.menu-grid');
-      if (!menuGrid) return;
-      
-      // Clear existing menu items
-      menuGrid.innerHTML = '';
-      
-      if (items.length === 0) {
+    const menuGrid = document.querySelector('.menu-grid');
+    if (!menuGrid) return;
+    
+    // Clear existing menu items
+    menuGrid.innerHTML = '';
+    
+    if (items.length === 0) {
         menuGrid.innerHTML = `
-          <div class="menu-loading">
+        <div class="menu-loading">
             No menu items found. Please check your Google Sheet configuration.
-          </div>
+        </div>
         `;
         return;
-      }
-      
-      // Add new menu items from Google Sheet
-      items.forEach(item => {
+    }
+    
+    // Add new menu items from Google Sheet
+    items.forEach(item => {
         const menuItemHTML = `
-          <div class="menu-item">
+        <div class="menu-item">
             <div class="menu-image">
-              <img src="${item.imageUrl}" alt="${item.title}">
+            <img src="${item.imageUrl}" alt="${item.title}">
             </div>
             <div class="menu-info">
-              <h3>${item.title}</h3>
-              <p>${item.description}</p>
-              <span class="price">${item.price}</span>
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <span class="price">${item.price}</span>
             </div>
-          </div>
+        </div>
         `;
         
         menuGrid.innerHTML += menuItemHTML;
-      });
+    });
     }
-    
+
     // Initialize menu on page load
     document.addEventListener('DOMContentLoaded', async () => {
-      // Fetch and render menu items
-      const menuItems = await fetchMenuItems();
-      renderMenuItems(menuItems);
+    // Fetch and render menu items
+    const menuItems = await fetchMenuItems();
+    renderMenuItems(menuItems);
     });
   </script>
 
